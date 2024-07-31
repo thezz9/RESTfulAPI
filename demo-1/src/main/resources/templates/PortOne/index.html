@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<script  src="http://code.jquery.com/jquery-1.10.2.js" ></script>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+<body>
+<div  th:replace="~{include/top}"></div>
+<section>
+<br>
+<div align="center">
+<br><br>
+	<h1> 이니시스 결제 시험중 </h1>
+    <form>
+	<div class="kg_pay_btn" th:data-name="${data.dataName}" th:data-goodsnum="${data.dataGoodsnum}" th:data-price="${data.dataPrice}">
+	  <button type="button"   th:onclick="kg_request_pay()">결제하기</button>
+	</div>
+	<br><br>
+	
+	<div class="ka_pay_btn">
+	  <button type="button" th:onclick="ka_request_pay()">카카오페이</button>
+	</div>
+	
+    </form>
+    
+</div>
+<br>
+</section>
+
+<script th:inline="javascript">
+	
+  jQuery.ajaxSetup({cache:false});
+  
+  function kg_request_pay() {
+	
+    alert("결제 시작하기(1)")	
+	  
+    //전달할 데이터
+    var selectedGoodsName = document.querySelector(".kg_pay_btn").getAttribute("data-name");
+    var selectedGoodsPrice = document.querySelector(".kg_pay_btn").getAttribute("data-price");
+    var selectedGoodsNum = document.querySelector(".kg_pay_btn").getAttribute("data-goodsnum");
+
+    //kg이니시스 결제 API
+    var IMP = window.IMP; // 생략가능
+    IMP.init('imp14252070');  // 가맹점 식별코드 (추가하기)
+
+    // IMP.request_pay(param, callback) 결제창 호출
+    IMP.request_pay({
+      pg: "html5_inicis",
+      pay_method: "card",
+      merchant_uid: "gpay_" + new Date().getTime(),   // 주문번호
+    
+      name: /*[[${gym.gname}]]*/'' +" "+ selectedGoodsName,
+      amount: selectedGoodsPrice,                         // 숫자 타입
+      buyer_email: /*[[${member.mmail}]]*/'' , 
+      buyer_name: /*[[${member.mname}]]*/'',
+      buyer_tel: /*[[${member.mphone}]]*/''
+   
+    }, function (rsp) { // callback
+      console.log(rsp);
+      if ( rsp.success ) { //결제 성공시
+        var msg = '결제가 완료되었습니다.';
+        alert(msg);
+        var result = {
+          "mpaynum" : rsp.merchant_uid, 
+          "membernum" : /*[[${member.membernum}]]*/'', 
+          "mpaymethod":rsp.pay_method, 
+          "mpayproduct":rsp.name, 
+          "mpayprice":rsp.paid_amount, 
+          "mpaydate" : new Date().toISOString().slice(0, 10), 
+          "mpaygym" : /*[[${gym.gname}]]*/'', 
+          "mpayperiod" : selectedDate, 
+          "mpaytime" : "",
+          "trainername":"",  
+          "ggoodsnum": selectedGoodsNum,
+          "tgoodsint" : null,  
+          "gymnum" : /*[[${gym.gymnum}]]*/'' 
+        }
+        console.log(result);
+        alert("result:" + result);
+        
+        $.ajax({
+           type:"post",
+           url:"/insertMPay",
+           contentType: 'application/json',
+           data:JSON.stringify(result),
+           success: function (res) {
+           alert("success:" + res);
+           console.log(res);
+           location.href=res;
+          }
+        }); //ajax 
+      } 
+    });        
+  }
+
+</script>
+
+<div  th:replace="~{include/bottom::footer}"></div>
+</body>
+</html>

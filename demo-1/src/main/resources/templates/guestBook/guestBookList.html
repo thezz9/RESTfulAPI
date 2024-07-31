@@ -1,0 +1,57 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div  th:replace="~{include/top}"></div>
+<section>
+<br>
+<div align="center"> 
+<h2> 방명록 목록보기  </h2>
+1. 페이지 사이즈 : [[${pageSize}]]&nbsp;2.페이지 list 사이즈 : [[${pageListSize}]]&nbsp; 
+3. 전체레코드 : [[${totalCount}]]&nbsp;4. 총 페이지 : [[${totalPage}]] <br>
+5. 현재 레코드 : [[${currentRecord}]]&nbsp;6. 현재 페이지 : [[${currentPage}]]&nbsp;
+7. 하단 가로 시작 : [[${listStartPage}]]&nbsp;8. 하단 가로 끝 : [[${listEndPage}]]&nbsp;
+<table border=1  width=700 >
+<tr><th>rownum</th><th>rnum</th><th>순서</th><th>이름</th><th>메모</th><th>나이</th><th>작성일자</th></tr>
+<tr th:each="m : ${li}" align="center" >
+	<td>[[${m.rownum}]]</td> 
+	<td>[[${m.rnum}]]</td> 
+	<td>[[${m.idx}]]</td> 
+	<td>[[${m.name}]]</td>
+	<td>[[${m.memo}]]</td>
+	<td>[[${m.age}]]</td>
+	<td>[[${m.regdate}]]</td>
+</tr>
+</table>
+<form action="/guestbook/selectGuestBook">
+<select name="ch1">
+<option value="name">name</option>
+<option value="memo">memo</option>
+</select>
+<input type="text" name="ch2">
+<input type="submit" value="검색">
+</form>
+<a th:href="@{/guestbook/selectGuestBook(start=1, ch1=${ch1}, ch2=${ch2})}" th:text="처음으로"></a>
+<th:block th:if="${listStartPage > pageListSize}" th:with="start=${(listStartPage - pageListSize - 1) * pageSize + 1}">
+	<a th:href="@{/guestbook/selectGuestBook(start=${start}, ch1=${ch1}, ch2=${ch2})}" th:text="이전10"></a>
+</th:block>
+<th:block th:unless="${listStartPage > pageListSize}">
+	이전10
+</th:block>
+<th:block th:each="i : ${#numbers.sequence(listStartPage, listEndPage)}" th:with="start=${(i-1) * pageSize + 1}">
+	<a th:if="${i <= totalPage}" th:text="[+${i}+]"
+	   th:href="@{/guestbook/selectGuestBook(start=${start}, ch1=${ch1}, ch2=${ch2})}"></a>
+</th:block>
+<th:block th:if="${listEndPage < totalPage}" th:with="start=${listEndPage * pageSize + 1}">
+	<a th:href="@{/guestbook/selectGuestBook(start=${start}, ch1=${ch1}, ch2=${ch2})}" th:text="다음10"></a>
+</th:block>
+<th:block th:unless="${listEndPage < totalPage}">
+	다음10
+</th:block>
+<th:block th:with="start=${lastPage}">
+<a th:href="@{/guestbook/selectGuestBook(start=${start}, ch1=${ch1}, ch2=${ch2})}" th:text="마지막"></a>
+</th:block>
+</div>
+<br>
+</section>
+<div  th:replace="~{include/bottom::footer}"></div>
+</body>
+</html>
