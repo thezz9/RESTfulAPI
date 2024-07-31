@@ -4,13 +4,13 @@
     2. 용도 : RESTful API 서버와 클라이언트 <br>
     3. 내용 : 방명록 페이지 나누기 <br>
 </td></tr>
-<tr><td colspan="2">
+<tr><td colspan="2" align="center">
     서버 테스트 이미지 (포트번호 - 8894)
 </td></tr>
 <tr><td colspan="2">
     <img src="https://cafeptthumb-phinf.pstatic.net/MjAyNDA3MzFfMjQx/MDAxNzIyMzg4Nzk5ODIy.D0RFyrtUkr7rrvAJinl2LiH0iaFgC-1TrvorcBisvqsg.w1MDWGZD0TF7fE4xdyIWucM1ycNizsMMTaZ91NQ08Acg.PNG/C1.PNG?type=w1600"/>
 </td></tr>
-<tr><td colspan="2">
+<tr><td colspan="2" align="center">
     클라이언트 테스트 이미지 (포트번호 - 8895)
 </td></tr>
 <tr><td>
